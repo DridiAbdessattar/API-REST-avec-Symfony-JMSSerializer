@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @Route("/jeux/video")
@@ -22,31 +23,24 @@ class JeuxVideoController extends Controller
         $jeuxVideos = $this->getDoctrine()
             ->getRepository(JeuxVideo::class)
             ->findAll();
+        $data = $this->get('jms_serializer')->serialize($jeuxVideos, 'json',SerializationContext::create()->setGroups(array('list')));
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
 
-        return $this->render('jeux_video/index.html.twig', ['jeux_videos' => $jeuxVideos]);
     }
 
     /**
-     * @Route("/new", name="jeux_video_new", methods="GET|POST")
+     * @Route("/add", name="jeux_video_new", methods="POST")
      */
     public function new(Request $request): Response
     {
-        $jeuxVideo = new JeuxVideo();
-        $form = $this->createForm(JeuxVideoType::class, $jeuxVideo);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($jeuxVideo);
-            $em->flush();
-
-            return $this->redirectToRoute('jeux_video_index');
-        }
-
-        return $this->render('jeux_video/new.html.twig', [
-            'jeux_video' => $jeuxVideo,
-            'form' => $form->createView(),
-        ]);
+        $data = $request->getContent();
+        $jeuxVideos = $this->get('jms_serializer')->deserialize($data, 'App\Entity\JeuxVideo', 'json');
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($jeuxVideos);
+        $em->flush();
+        return new Response('', Response::HTTP_CREATED);
     }
 
     /**
@@ -54,7 +48,10 @@ class JeuxVideoController extends Controller
      */
     public function show(JeuxVideo $jeuxVideo): Response
     {
-        return $this->render('jeux_video/show.html.twig', ['jeux_video' => $jeuxVideo]);
+        $data = $this->get('jms_serializer')->serialize($jeuxVideo, 'json',SerializationContext::create()->setGroups(array('detail')));
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**

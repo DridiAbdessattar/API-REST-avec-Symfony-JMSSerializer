@@ -9,6 +9,13 @@ b-Configuring the Database
 3-Generating the Getters & Setters 
 
 4-CRUDController Actions :
-//composer require annotations form validator twig-bundle security-csrf          
+//composer require annotations form validator twig-bundle security-csrf     
+
+5-JMSSerializer 
+
+//Installer JMSSerializer
+//la sérialisation et la désérialisation
+//Politique d'exclusion
+//Groupe de sérialisation     
 
 
