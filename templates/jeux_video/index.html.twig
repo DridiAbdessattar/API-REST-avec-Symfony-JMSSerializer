@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}JeuxVideo index{% endblock %}
+
+{% block body %}
+    <h1>JeuxVideo index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Uid</th>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Possesseur</th>
+                <th>Console</th>
+                <th>Prix</th>
+                <th>NbreJoueursMax</th>
+                <th>Commentaires</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for jeux_video in jeux_videos %}
+            <tr>
+                <td>{{ jeux_video.uid }}</td>
+                <td>{{ jeux_video.id }}</td>
+                <td>{{ jeux_video.nom }}</td>
+                <td>{{ jeux_video.possesseur }}</td>
+                <td>{{ jeux_video.console }}</td>
+                <td>{{ jeux_video.prix }}</td>
+                <td>{{ jeux_video.nbreJoueursMax }}</td>
+                <td>{{ jeux_video.commentaires }}</td>
+                <td>
+                    <a href="{{ path('jeux_video_show', {'uid': jeux_video.uid}) }}">show</a>
+                    <a href="{{ path('jeux_video_edit', {'uid': jeux_video.uid}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('jeux_video_new') }}">Create new</a>
+{% endblock %}
